@@ -24,11 +24,11 @@ describe('Create User', () => {
   });
 
   it('Should be able to create a new user with password encrypted', async () => {
-    const userPasswordWithoutEncryption = 'hawktuah';
+    const userPasswordWithoutEncryption = 'hex';
 
     const user = await createUserUseCase.execute({
-      name: 'John Doe',
-      email: 'johndoe@email.com',
+      name: 'Nicole',
+      email: 'nicolereeyn@email.com',
       password: userPasswordWithoutEncryption
     });
 
