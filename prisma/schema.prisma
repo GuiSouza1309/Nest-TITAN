@@ -12,4 +12,14 @@ model User {
   email     String   @unique
   password  String
   createdAt DateTime @default(now())
+  notes     Note[]
+}
+
+model Note {
+  id           String   @id
+  title        String
+  descriptions String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
 }
