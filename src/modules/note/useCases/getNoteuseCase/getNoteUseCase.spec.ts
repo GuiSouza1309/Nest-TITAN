@@ -1,8 +1,9 @@
 import { makeUser } from 'src/modules/user/factories/userFactory';
 import { NoteRepositoryInMemory } from '../../repositories/noteRepositoryInMemory';
 import { makeNote } from '../../factories/noteFactory';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { GetNoteUseCase } from './getNoteUseCase';
+import { NoteNotFoundException } from '../../exceptions/NoteNotFoundException';
+import { NoteWithoutPermissionException } from '../../exceptions/NoteWithoutPermissionException';
 
 let noteRepositoryInMemory: NoteRepositoryInMemory;
 let getNoteUseCase: GetNoteUseCase;
@@ -27,14 +28,14 @@ describe('Get Note', () => {
     expect(result).toEqual(note);
   });
 
-  it("Should be able to throw error when not found note", async () => {
-expect(async () => {
-    await getNoteUseCase.execute({
+  it('Should be able to throw error when not found note', async () => {
+    expect(async () => {
+      await getNoteUseCase.execute({
         noteId: 'fakeId',
         userId: 'fakeId',
-    });
-    }).rejects.toThrow(NotFoundException); 
-  })
+      });
+    }).rejects.toThrow(NoteNotFoundException);
+  });
 
   it('Should be able to throw error when note has another user', async () => {
     const note = makeNote({});
@@ -44,6 +45,6 @@ expect(async () => {
         noteId: note.id,
         userId: 'fakeId',
       });
-    }).rejects.toThrow(UnauthorizedException);
+    }).rejects.toThrow(NoteWithoutPermissionException);
   });
 });

@@ -2,7 +2,8 @@ import { makeUser } from 'src/modules/user/factories/userFactory';
 import { NoteRepositoryInMemory } from '../../repositories/noteRepositoryInMemory';
 import { DeleteNoteUseCase } from './deleteNoteUseCase';
 import { makeNote } from '../../factories/noteFactory';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { NoteNotFoundException } from '../../exceptions/NoteNotFoundException';
+import { NoteWithoutPermissionException } from '../../exceptions/NoteWithoutPermissionException';
 
 let noteRepositoryInMemory: NoteRepositoryInMemory;
 let deleteNoteUseCase: DeleteNoteUseCase;
@@ -16,26 +17,26 @@ describe('Delete Note', () => {
   it('Should be able to delete note', async () => {
     const user = makeUser({});
     const note = makeNote({
-        userId: user.id
+      userId: user.id,
     });
 
     noteRepositoryInMemory.notes = [note];
     await deleteNoteUseCase.execute({
-        noteId: note.id,
-        userId: user.id
+      noteId: note.id,
+      userId: user.id,
     });
 
-    expect (noteRepositoryInMemory.notes).toHaveLength(0);
+    expect(noteRepositoryInMemory.notes).toHaveLength(0);
   });
 
-  it("Should be able to throw error when not found note", async () => {
-expect(async () => {
-    await deleteNoteUseCase.execute({
+  it('Should be able to throw error when not found note', async () => {
+    expect(async () => {
+      await deleteNoteUseCase.execute({
         noteId: 'fakeId',
         userId: 'fakeId',
-    });
-    }).rejects.toThrow(NotFoundException); 
-  })
+      });
+    }).rejects.toThrow(NoteNotFoundException);
+  });
 
   it('Should be able to throw error when note has another user', async () => {
     const note = makeNote({});
@@ -45,6 +46,6 @@ expect(async () => {
         noteId: note.id,
         userId: 'fakeId',
       });
-    }).rejects.toThrow(UnauthorizedException);
+    }).rejects.toThrow(NoteWithoutPermissionException);
   });
 });
