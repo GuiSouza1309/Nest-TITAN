@@ -1,12 +1,14 @@
 import { NoteRepository } from '../../repositories/noteRepository';
 import { NoteNotFoundException } from '../../exceptions/NoteNotFoundException';
 import { NoteWithoutPermissionException } from '../../exceptions/NoteWithoutPermissionException';
+import { Injectable } from '@nestjs/common';
 
 interface GetNoteRequest {
   noteId: string;
   userId: string;
 }
 
+@Injectable()
 export class GetNoteUseCase {
   constructor(private noteRepository: NoteRepository) {}
 

@@ -1,13 +1,14 @@
 import { NoteNotFoundException } from '../../exceptions/NoteNotFoundException';
 import { NoteWithoutPermissionException } from '../../exceptions/NoteWithoutPermissionException';
 import { NoteRepository } from '../../repositories/noteRepository';
-import { NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 
 interface DeleteNoteRequest {
   noteId: string;
   userId: string;
 }
 
+@Injectable()
 export class DeleteNoteUseCase {
   constructor(private noteRepository: NoteRepository) {}
 
